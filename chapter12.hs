@@ -149,3 +149,32 @@ flipMaybe :: [Maybe a] -> Maybe [a]
 flipMaybe [] = Nothing
 flipMaybe x | (length . filter isNothing $ x) > 0 = Nothing
 flipMaybe x = Just . catMaybes $ x
+
+-- Small library for Either
+isLeft :: Either a b -> Bool
+isLeft (Left _) = True
+isLeft _ = False
+
+isRight :: Either a b -> Bool
+isRight (Right _) = True
+isRight _ = False
+
+lefts' :: [Either a b] -> [a]
+lefts' = foldr (\(Left e) acc -> e : acc) [] . filter isLeft
+
+rights' :: [Either a b] -> [b]
+rights' = foldr (\(Right e) acc -> e : acc) [] . filter isRight
+
+partitionEithers' :: [Either a b] -> ([a], [b])
+partitionEithers' xs = (lefts' xs, rights' xs)
+
+eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe' f (Left _) = Nothing
+eitherMaybe' f (Right x) = Just (f x)
+
+either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' f g (Left x) = f x
+either' f g (Right x) = g x
+
+eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe'' f xs = either' (\ x -> Nothing)  (Just . f)  xs
