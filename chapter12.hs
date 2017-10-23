@@ -190,3 +190,18 @@ myUnfoldr f b = case f b of
 
 betterIterate :: (a -> a) -> a -> [a]
 betterIterate f x = myUnfoldr (\e -> Just (e ,f e)) x
+
+-- Finally something other than a list!
+data BinaryTree a = Leaf | Node (BinaryTree a) a (BinaryTree a) deriving (Eq, Ord, Show)
+
+unfoldTree :: (a -> Maybe (a, b, a)) -> a -> BinaryTree b
+unfoldTree f a = case f a of
+  Just (d, e, d') -> Node (unfoldTree f d) e (unfoldTree f d')
+  Nothing -> Leaf
+
+treeBuild :: Integer -> BinaryTree Integer
+treeBuild 0 = Leaf
+treeBuild n = unfoldTree f n
+  where 
+    f 0 = Nothing
+    f n = Just (n-1, n, n-1)
