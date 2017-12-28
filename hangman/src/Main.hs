@@ -15,7 +15,6 @@ allWords :: IO WordList
 allWords = do
   dict <- readFile "data/dict.txt"
   return $ WordList (lines dict)
-
 minWordLength :: Int
 minWordLength = 5
 
@@ -36,6 +35,7 @@ gameWords = do
 randomWord :: WordList -> IO String
 randomWord (WordList wl) = do
   randomIndex <- randomRIO (0, length wl -1)
+
   return $ wl !! randomIndex
 
 randomWord' :: IO String
@@ -55,6 +55,7 @@ charInWord (Puzzle word _ _) c = c `elem` word
 
 alreadyGuessed :: Puzzle -> Char -> Bool
 alreadyGuessed (Puzzle _ _ guessed) c = c `elem` guessed
+
 
 renderPuzzleChar :: Maybe Char -> Char
 renderPuzzleChar Nothing = '_'
@@ -116,6 +117,7 @@ runGame puzzle = forever $ do
   case guess of
     [c] -> handleGuess puzzle c >>= runGame
     _ -> putStrLn "Your guess must be a single character!"
+
 
 main :: IO ()
 main = do
